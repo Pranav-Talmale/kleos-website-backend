@@ -9,6 +9,11 @@ const userSchema = mongoose.Schema({
         type: String,
     },
 
+    state:{
+        type: String,
+        required: true
+    },
+
     member1Name: {
         type: String,
         required: true

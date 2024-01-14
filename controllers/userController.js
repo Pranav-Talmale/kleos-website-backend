@@ -28,7 +28,7 @@ const authUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { member1Name, member1Email, member1Number, password } = req.body;
+  const { member1Name, member1Email, member1Number, state, password } = req.body;
 
   const userExists = await User.findOne({ member1Email });
 
@@ -41,6 +41,7 @@ const registerUser = asyncHandler(async (req, res) => {
     member1Name,
     member1Email,
     member1Number,
+    state,
     password,
   });
 
@@ -51,7 +52,8 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       member1Name: user.member1Name,
       member1Email: user.member1Email,
-      member1Number: user.member1Number
+      member1Number: user.member1Number,
+      state: user.state
     });
   } else {
     res.status(400);
@@ -79,6 +81,8 @@ const getUserProfile = asyncHandler(async (req, res) => {
   if (user) {
     res.json({
       _id: user._id,
+
+      state: user.state,
 
       shortTeamName: user.shortTeamName,
       teamName: user.teamName,
