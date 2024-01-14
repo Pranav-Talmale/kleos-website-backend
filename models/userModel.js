@@ -1,76 +1,89 @@
 import mongoose from "mongoose";
-import bcrypt from 'bcryptjs';
+import bcrypt from "bcryptjs";
 
-const userSchema = mongoose.Schema({
-    shortTeamName: {
-        type: String,
-    },
-    teamName: {
-        type: String,
-    },
-
-    state:{
-        type: String,
-        required: true
+const userSchema = mongoose.Schema(
+  {
+    state: {
+      type: String,
+      required: true,
     },
 
     member1Name: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     member1Email: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      required: true,
+      unique: true,
     },
     member1Number: {
-        type: Number,
-        required: true,
-        unique: true
+      type: Number,
+      required: true,
+      unique: true,
     },
 
-    member2Name: {
-        type: String,
-    },
-    member2Email: {
-        type: String,
-        unique: true
-    },
-    member2Number: {
-        type: Number,
-        unique: true
-    },
-
-    member3Name: {
-        type: String,
-    },
-    member3Email: {
-        type: String,
-        unique: true
-    },
-    member3Number: {
-        type: Number,
-        unique: true
-    },
-
-    member4Name: {
-        type: String,
-    },
-    member4Email: {
-        type: String,
-        unique: true
-    },
-    member4Number: {
-        type: Number,
-        unique: true
-    },
-    
     password: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
-},{
-    timestamps: true
+  },
+  {
+    timestamps: true,
+  },
+);
+
+userSchema.add({
+  shortTeamName: {
+    type: String,
+  },
+  teamName: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+
+  member2Name: {
+    type: String,
+  },
+  member2Email: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+  member2Number: {
+    type: Number,
+    unique: true,
+    sparse: true,
+  },
+
+  member3Name: {
+    type: String,
+  },
+  member3Email: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+  member3Number: {
+    type: Number,
+    unique: true,
+    sparse: true,
+  },
+
+  member4Name: {
+    type: String,
+  },
+  member4Email: {
+    type: String,
+    unique: true,
+    sparse: true,
+  },
+  member4Number: {
+    type: Number,
+    unique: true,
+    sparse: true,
+  },
 });
 
 // Match user entered password to hashed password in database
@@ -79,8 +92,8 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 // Encrypt password using bcrypt
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
     next();
   }
 
@@ -88,6 +101,6 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User;
