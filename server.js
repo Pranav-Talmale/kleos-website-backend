@@ -1,16 +1,22 @@
 import path from "path";
 import express from "express";
 import dotenv from "dotenv";
-dotenv.config();
-import connectDB from "./config/db.js";
+import Razorpay from "razorpay";
 import cookieParser from "cookie-parser";
-import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
-import userRoutes from "./routes/userRoutes.js";
-import allowedOrigins from "./config/allowedOrigins.js";
-import credentials from "./middleware/credentials.js";
 import cors from "cors";
 
-const test = cors({
+dotenv.config();
+
+import connectDB from "./config/db.js";
+import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
+import userRoutes from "./routes/userRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import allowedOrigins from "./config/allowedOrigins.js";
+import credentials from "./middleware/credentials.js";
+
+
+
+const corsConfig = cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -26,30 +32,27 @@ const port = process.env.PORT || 5000;
 
 connectDB();
 
+const razorPayInstance = new Razorpay({
+  key_id: process.env.RAZORPAY_API_KEY,
+  key_secret: process.env.RAZORPAY_APT_SECRET,
+});
+
 const app = express();
 app.use(cookieParser());
 app.set('trust proxy', 1);
 app.use(credentials);
-app.use(test);
+app.use(corsConfig);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/users", userRoutes);
-
-if (process.env.NODE_ENV === "production") {
-  const __dirname = path.resolve();
-  app.use(express.static(path.join(__dirname, "/frontend/dist")));
-
-  app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "frontend", "dist", "index.html")),
-  );
-} else {
-  app.get("/", (req, res) => {
-    res.send("API is running....");
-  });
-}
+app.use("/api/payment", paymentRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
+
+export {
+  razorPayInstance
+};

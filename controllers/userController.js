@@ -146,6 +146,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 
     res.json({
       _id: updatedUser._id,
+      paymentComplete: updatedUser.paymentComplete,
 
       shortTeamName: updatedUser.shortTeamName,
       teamName: updatedUser.teamName,

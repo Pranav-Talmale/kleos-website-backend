@@ -27,6 +27,13 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+
+    paymentComplete: {
+      type: Boolean,
+      default: false,
+      unique: false,
+      sparse: true,
+    },
   },
   {
     timestamps: true,
@@ -82,6 +89,19 @@ userSchema.add({
   member4Number: {
     type: Number,
     unique: true,
+    sparse: true,
+  },
+
+  razorpay_order_id: {
+    type: String,
+    sparse: true,
+  },
+  razorpay_payment_id: {
+    type: String,
+    sparse: true,
+  },
+  razorpay_signature: {
+    type: String,
     sparse: true,
   },
 });
