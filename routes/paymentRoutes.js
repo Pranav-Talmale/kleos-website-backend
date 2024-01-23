@@ -3,20 +3,20 @@ import {
   checkout,
   paymentVerification,
 } from "../controllers/paymentController.js";
-import { protect } from '../middleware/authMiddleware.js';
+import { protect } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 router.post(
   "/checkout",
   //protect,
-  checkout
-  );
+  checkout,
+);
 
 router.post(
   "/paymentverification",
   //protect,
-  paymentVerification
-  );
+  paymentVerification,
+);
 
 export default router;

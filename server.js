@@ -14,8 +14,6 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import allowedOrigins from "./config/allowedOrigins.js";
 import credentials from "./middleware/credentials.js";
 
-
-
 const corsConfig = cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -39,7 +37,7 @@ const razorPayInstance = new Razorpay({
 
 const app = express();
 app.use(cookieParser());
-app.set('trust proxy', 1);
+app.set("trust proxy", 1);
 app.use(credentials);
 app.use(corsConfig);
 app.use(express.json());
@@ -53,6 +51,4 @@ app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
 
-export {
-  razorPayInstance
-};
+export { razorPayInstance };
