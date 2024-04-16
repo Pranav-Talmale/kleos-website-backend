@@ -1,7 +1,7 @@
-import crypto from "crypto";
-import asyncHandler from "express-async-handler";
-import User from "../models/userModel.js";
-import { razorPayInstance } from "../server.js";
+const crypto = require("crypto");
+const asyncHandler = require("express-async-handler");
+const User = require("../models/userModel.js");
+const { razorPayInstance } = require("../server.js");
 
 // @desc    Checkout Handler
 // @route   POST /api/payment/checkout
@@ -98,4 +98,4 @@ const paymentVerification = asyncHandler(async (req, res) => {
   }
 }; */
 
-export { checkout, paymentVerification };
+module.exports = { checkout, paymentVerification };
