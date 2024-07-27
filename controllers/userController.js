@@ -6,11 +6,11 @@ const generateToken = require("../utils/generateToken.js");
 // @route   POST /api/users/auth
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
-  const { member1Email, password } = req.body;
+  const { member1Email, password, signType } = req.body;
 
   const user = await User.findOne({ member1Email });
 
-  if (user && (await user.matchPassword(password))) {
+  if (user && (await user.matchPassword(password)) || signType == "google") {
     generateToken(res, user._id);
 
     res.json({
@@ -28,13 +28,20 @@ const authUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { member1Name, member1Email, member1Number, state, password } =
+  const { member1Name, member1Email, member1Number, state, password, signType } =
     req.body;
 
   const userExists = await User.findOne({ member1Email });
 
+  if(userExists && signType == "google"){
+
+    res.status(200).json({ message: "User already exists", code: "UE" });
+    return;
+  
+  }
+
   if (userExists) {
-    res.status(400);
+    res.status(400)
     throw new Error("User already exists");
   }
 
@@ -44,6 +51,7 @@ const registerUser = asyncHandler(async (req, res) => {
     member1Number,
     state,
     password,
+    signType
   });
 
   if (user) {

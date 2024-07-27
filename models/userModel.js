@@ -34,6 +34,12 @@ const userSchema = mongoose.Schema(
       unique: false,
       sparse: true,
     },
+
+    signType: {
+
+      type: String,
+      required: true
+    }
   },
   {
     timestamps: true,
