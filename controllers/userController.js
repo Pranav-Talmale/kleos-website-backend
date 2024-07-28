@@ -6,17 +6,17 @@ const generateToken = require("../utils/generateToken.js");
 // @route   POST /api/users/auth
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
-  const { member1Email, password, signType } = req.body;
+  const { email, password, signType } = req.body;
 
-  const user = await User.findOne({ member1Email });
+  const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password)) || signType == "google") {
     generateToken(res, user._id);
 
     res.json({
       _id: user._id,
-      member1Name: user.member1Name,
-      member1Email: user.member1Email,
+      name: user.name,
+      email: user.email,
     });
   } else {
     res.status(401);
@@ -28,10 +28,10 @@ const authUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { member1Name, member1Email, member1Number, state, password, signType } =
-    req.body;
+  
+  const { name, email, number, password, signType, state } = req.body;
 
-  const userExists = await User.findOne({ member1Email });
+  const userExists = await User.findOne({ email });
 
   if(userExists && signType == "google"){
 
@@ -46,9 +46,9 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 
   const user = await User.create({
-    member1Name,
-    member1Email,
-    member1Number,
+    name,
+    email,
+    number,
     state,
     password,
     signType
@@ -59,14 +59,35 @@ const registerUser = asyncHandler(async (req, res) => {
 
     res.status(201).json({
       _id: user._id,
-      member1Name: user.member1Name,
-      member1Email: user.member1Email,
-      member1Number: user.member1Number,
+      name: user.name,
+      email: user.email,
+      number: user.number,
       state: user.state,
     });
   } else {
     res.status(400);
     throw new Error("Invalid user data");
+  }
+});
+
+const getUserProfile = asyncHandler(async (req, res) => {
+
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    res.json({
+      _id: user._id,
+
+      state: user.state,
+
+      name: user.name,
+      email: user.email,
+      number: user.number,
+
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
   }
 });
 
@@ -84,6 +105,17 @@ const logoutUser = (req, res) => {
 // @desc    Get user profile
 // @route   GET /api/users/profile
 // @access  Private
+
+
+module.exports = {
+  authUser,
+  registerUser,
+  logoutUser,
+  getUserProfile,
+};
+
+/*  HACKATHON FUNCTIONS
+
 const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user._id);
 
@@ -184,12 +216,4 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     console.error("Error in updateUserProfile:", error); // Log any caught errors
     res.status(500).json({ message: "Server Error" });
   }
-});
-
-module.exports = {
-  authUser,
-  registerUser,
-  logoutUser,
-  getUserProfile,
-  updateUserProfile,
-};
+}); */

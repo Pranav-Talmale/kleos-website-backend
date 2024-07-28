@@ -3,42 +3,35 @@ const bcrypt = require("bcryptjs");
 
 const userSchema = mongoose.Schema(
   {
-    state: {
+    name: {
       type: String,
       required: true,
     },
-
-    member1Name: {
-      type: String,
-      required: true,
-    },
-    member1Email: {
+    email: {
       type: String,
       required: true,
       unique: true,
     },
-    member1Number: {
+    number: {
       type: Number,
       required: true,
       unique: true,
     },
-
     password: {
       type: String,
       required: true,
     },
-
-    paymentComplete: {
-      type: Boolean,
-      default: false,
-      unique: false,
-      sparse: true,
-    },
-
     signType: {
-
       type: String,
       required: true
+    },
+    state: {
+      type: String,
+      required: true,
+    },
+    events: {
+      type: [String],
+      required: false,
     }
   },
   {
